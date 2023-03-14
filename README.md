@@ -1,2 +1,2 @@
 # PoToMato
-An incomplete python implementation of Limma
+An incomplete proteomics differential expression platform
