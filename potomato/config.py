@@ -86,7 +86,7 @@ def _parser():
         default=True,
         type=bool,
         help=(
-            "use maxlfq intensities if ""
+            "use maxlfq intensities"
             )
         )
     

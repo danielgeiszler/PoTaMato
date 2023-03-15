@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This is the command line interface for PoToMato
+This is the command line interface for PoTaMato
 
 Created on Tue Mar 14 15:30:10 2023
 
@@ -8,16 +8,14 @@ Adapted from Mokapot by @wfondrie
 
 @author: Daniel J Geiszler
 """
-import sys
+
 import time
 import logging
 
-from os.path import basename
-
-import numpy as np
-
 from parsers.parse_ionquant import read_ionquant_protein
 from config import Config
+from season import season
+from roast import roast
 
 def main():
     """The CLI entry point"""
@@ -43,12 +41,17 @@ def main():
 
     # Parse input
     parse_prot_fin = get_parser(config, "protein")
-    prot_data = parse_prot_fin(
+    prots = parse_prot_fin(
         config.protfile,
         config.condition_tags,
         config.use_maxlfq
        )
     
+    # Season your datasets with some preprocessing
+    season(prots=prots, transform="log2") # Todo implement log2 param
+    
+    # Roast your datasets with some modeling
+    roast(model="prot_limma", prots=prots)
 
 
 def get_parser(config, fin_level="protein"):
@@ -60,15 +63,13 @@ def get_parser(config, fin_level="protein"):
     Parameters
     ----------
     config : argparse object
-        DESCRIPTION.
-    fin_level : TYPE, optional
+    fin_level : str, optional
         DESCRIPTION. The default is "protein".
 
     Returns
     -------
     callable
         returns the correct parser for the files
-
     """
     
     if fin_level == "protein":
